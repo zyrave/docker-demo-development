@@ -1,0 +1,35 @@
+version: '3'
+services:
+  ################################################################
+  #                     Setup Node Container
+  ################################################################
+  server:
+    build: ./server
+    environment:
+      API_HOST: ${API_HOST}
+      APP_SERVER_PORT: ${APP_SERVER_PORT}
+    expose:
+      - ${APP_SERVER_PORT}
+    ports:
+      - ${APP_SERVER_PORT}:${APP_SERVER_PORT}
+    volumes:
+      - ./server/src:/app/docker-demo-server/src
+    command: yarn start
+
+  ################################################################
+  #                     Setup Client Container
+  ################################################################
+  client:
+    build: ./client
+    environment:
+      - REACT_APP_PORT=${REACT_APP_PORT}
+    expose:
+      - ${REACT_APP_PORT}
+    ports:
+      - ${REACT_APP_PORT}:${REACT_APP_PORT}
+    volumes:
+      - ./client/src:/app/docker-demo-client/src
+      - ./client/public:/app/docker-demo-client/public
+    links:
+      - server
+    command: yarn start
